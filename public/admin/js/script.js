@@ -179,3 +179,35 @@ if(uploadImage){
     }
   });
 }
+
+const sort = document.querySelector("[sort]");
+if(sort){
+  const sortSelect = sort.querySelector("[sort-select]");
+  const sortClear = sort.querySelector("[sort-clear]");
+  let url = new URL(window.location.href);
+  sortSelect.addEventListener("change", (event) => {
+    const value = event.target.value;
+    const [sortKey, sortValue] = value.split("-");
+      
+    url.searchParams.set("sortKey", sortKey);
+    url.searchParams.set("sortValue", sortValue);
+
+    window.location.href = url;
+  });
+
+  sortClear.addEventListener("click", () => {
+    url.searchParams.delete("sortKey");
+    url.searchParams.delete("sortValue");
+
+    window.location.href = url;
+  });
+
+  const sortKey = url.searchParams.get("sortKey");
+  const sortValue = url.searchParams.get("sortValue");
+
+  if(sortKey && sortValue){
+    const sortString = `${sortKey}-${sortValue}`;
+    const optionSelect = sortSelect.querySelector(`option[value='${sortString}']`);
+    optionSelect.selected = true;
+  }
+}

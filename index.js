@@ -8,6 +8,7 @@ const flash = require("express-flash");
 const session = require("express-session");
 const database = require("./config/database");
 const systemConfig = require("./config/system");
+const path = require('path');
 database.connect();
 
 const product = require('./models/products.model');
@@ -27,6 +28,8 @@ app.use(session({ cookie: { maxAge: 60000 } }));
 app.use(flash());
 
 app.use(express.static(`${__dirname}/public`));
+
+app.use('/tinymce', express.static(path.join(__dirname, 'node_modules', 'tinymce')));
 
 app.use(methodOverride("_method"));
 app.use(bodyParser.urlencoded({ extended: false }));
