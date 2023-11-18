@@ -1,5 +1,6 @@
 const product = require("../../models/products.model");
 const productCategory = require("../../models/products-category.model");
+const account = require("../../models/account.model");
 
 const filterStatusHelper = require("../../helpers/filterStatus");
 const searchHelper = require("../../helpers/search");
@@ -53,6 +54,28 @@ module.exports.index = async (req, res) => {
       .limit(objectPagination.limitItems)
       .skip(objectPagination.skip);
 
+    for (const product of products) {
+      const userCreated = await account.findOne({
+        _id: product.createdBy.account_id
+      });
+      
+      if(userCreated){
+        product.createdBy.accountFullName = userCreated.fullName;
+      }
+
+      const userUpdatedId = product.updatedBy.slice(-1)[0];
+
+      if(userUpdatedId){
+        const userUpdated = await account.findOne({
+          _id: userUpdatedId.account_id
+        });
+        
+        if(userUpdated){
+          userUpdatedId.accountFullName = userUpdated.fullName;
+        }
+      }
+    }
+
     if (products.length > 0 || countProducts == 0) {
       res.render("admin/pages/products/index", {
         titlePage: "Danh sách sản phẩm",
@@ -70,16 +93,31 @@ module.exports.index = async (req, res) => {
       res.redirect(href);
     }
   }catch (error) {
+    console.log(error);
     res.redirect("back");
   }
 };
 
 // [GET] /admin/products/change-status/:status/:id
 module.exports.changeStatus = async (req, res) => {
+  const permissions = res.locals.role.permissions;
+  if(!permissions.includes("products_edit")){
+    req.flash("error" , "Error");
+    res.redirect(`/${config.prefixAdmin}/products`);
+    return;
+  }
   const status = req.params.status;
   const id = req.params.id;
 
-  await product.updateOne({ _id: id }, { status: status });
+  const updatedBy = {
+    account_id: res.locals.user.id,
+    updatedAt: new Date(),
+  };
+
+  await product.updateOne({ _id: id }, { 
+    status: status,
+    $push: {updatedBy: updatedBy}
+  });
   req.flash("success", "Cập nhật trạng thái thành công!");
   // res.redirect("/admin/products");
   res.redirect("back");
@@ -87,12 +125,27 @@ module.exports.changeStatus = async (req, res) => {
 
 // [GET] /admin/products/change-multi
 module.exports.changeMulti = async (req, res) => {
+  const permissions = res.locals.role.permissions;
+  if(!permissions.includes("products_edit")){
+    req.flash("error" , "Error");
+    res.redirect(`/${config.prefixAdmin}/products`);
+    return;
+  }
   const ids = req.body.ids.split(", ");
   const status = req.body.type;
+  
+  const updatedBy = {
+    account_id: res.locals.user.id,
+    updatedAt: new Date(),
+  };
+
   switch (status) {
     case "active":
     case "inactive":
-      await product.updateMany({ _id: { $in: ids } }, { status: status });
+      await product.updateMany({ _id: { $in: ids } }, { 
+        status: status,
+        $push: {updatedBy: updatedBy},
+      });
       req.flash(
         "success",
         `Cập nhật trạng thái thành công ${ids.length} sản phẩm!`
@@ -101,14 +154,23 @@ module.exports.changeMulti = async (req, res) => {
     case "delete-all":
       await product.updateMany(
         { _id: { $in: ids } },
-        { deleted: true, deletedAt: new Date() }
+        { 
+          deleted: true,
+          deletedBy: {
+            account_id: res.locals.user.id,
+            deletedAt: new Date(),
+          }
+        }
       );
       req.flash("success", `Xóa thành công ${ids.length} sản phẩm!`);
       break;
     case "change-position":
       for (const item of ids) {
         const [id, position] = item.split("-");
-        await product.updateOne({ _id: id }, { position: position });
+        await product.updateOne({ _id: id }, { 
+          position: position,
+          $push: {updatedBy: updatedBy},
+        });
         req.flash(
           "success",
           `Thay đổi vị trí thành công ${ids.length} sản phẩm!`
@@ -127,7 +189,13 @@ module.exports.deleteItem = async (req, res) => {
 
   await product.updateOne(
     { _id: id },
-    { deleted: true, deletedAt: new Date() }
+    { 
+      deleted: true,
+      deletedBy: {
+        account_id: res.locals.user.id,
+        deletedAt: new Date(),
+      }
+    }
   );
   req.flash("success", "Xóa thành công!");
 
@@ -136,6 +204,12 @@ module.exports.deleteItem = async (req, res) => {
 
 // [GET] /admin/products/create
 module.exports.create = async (req, res) => {
+  const permissions = res.locals.role.permissions;
+  if(!permissions.includes("products_create")){
+    req.flash("error" , "Error");
+    res.redirect(`/${config.prefixAdmin}/products`);
+    return;
+  }
   const record = await productCategory.find({deleted: false});
 
   const newRecord = createTree(record);
@@ -163,14 +237,25 @@ module.exports.createPost = async (req, res) => {
   //   req.body.thumbnail = `/uploads/${req.file.filename}`;
   // }
   
+  req.body.createdBy = {
+    account_id: res.locals.user.id
+  }
+
   const newProduct = await new product(req.body);
   newProduct.save();
 
+  req.flash("success", "Tạo mới sản phẩm thành công");
   res.redirect(`/${config.prefixAdmin}/products`);
 };
 
 // [GET] /admin/products/edit/:id
 module.exports.edit = async (req, res) => {
+  const permissions = res.locals.role.permissions;
+  if(!permissions.includes("products_edit")){
+    req.flash("error" , "Error");
+    res.redirect(`/${config.prefixAdmin}/products`);
+    return;
+  }
   try{
     const id = req.params.id;
     const products = await product.findOne({_id: id, deleted: false});
@@ -201,7 +286,15 @@ module.exports.editPatch = async (req, res) => {
   //   req.body.thumbnail = `/uploads/${req.file.filename}`;
   // }
   
-  await product.updateOne({_id: id}, req.body);
+  const updatedBy = {
+    account_id: res.locals.user.id,
+    updatedAt: new Date(),
+  };
+
+  await product.updateOne({_id: id}, {
+    ...req.body,
+    $push: {updatedBy: updatedBy},
+  });
 
   req.flash("success", "Cập nhật sản phẩm thành công");
 
@@ -209,6 +302,12 @@ module.exports.editPatch = async (req, res) => {
 };
 
 module.exports.detail = async (req, res) => {
+  const permissions = res.locals.role.permissions;
+  if(!permissions.includes("products_view")){
+    req.flash("error" , "Error");
+    res.redirect(`/${config.prefixAdmin}/products`);
+    return;
+  }
   try{
     const id = req.params.id;
 

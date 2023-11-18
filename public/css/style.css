@@ -1,99 +1,398 @@
 /* Header */
 .header {
-    border-bottom: 1px solid #ddd;
-    padding: 10px 0;
-  }
+  border-bottom: 1px solid #ddd;
+  padding: 10px 0;
+}
   
-  .header .inner-logo img {
-    max-height: 50px;
-    max-width: 100%;
+.header .inner-logo img {
+  max-height: 50px;
+  max-width: 100%;
+}
+
+.header .inner-menu > ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+}
+
+.header .inner-menu > ul > li {
+  margin-left: 20px;
+}
+/* End Header */
+
+/* Footer */
+.footer {
+  background: #333;
+  color: #fff;
+  text-align: center;
+  padding: 10px;
+}
+/* End Footer */
+
+/* box-head */
+.box-head {
+  margin-bottom: 30px;
+}
+
+.box-head .inner-title {
+  margin-bottom: 0;
+  font-size: 28px;
+  font-weight: 600;
+  color: green;
+}
+/* End box-head */
+
+/* product-item */
+.product-item {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.product-item .inner-image {
+  width: 100%;
+  aspect-ratio: 4/3;
+  border-bottom: 1px solid #ddd;
+  position: relative;
+}
+
+.product-item .inner-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.product-item .inner-image .inner-featured {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background: green;
+  color: white;
+  padding: 3px 6px;
+  font-weight: 600;
+  font-size: 14px;
+  border-radius: 8px;
+}
+
+.product-item .inner-content {
+  padding: 15px;
+}
+
+.product-item .inner-content .inner-title {
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.product-item .inner-content .inner-price-new {
+  font-size: 18px;
+  font-weight: 600;
+  color: green;
+}
+
+.product-item .inner-content .inner-price-old {
+  font-size: 18px;
+  font-weight: 600;
+  color: red;
+      text-decoration: line-through;
+}
+
+.product-item .inner-content .inner-discount {
+  font-size: 14px;
+  font-weight: 600;
+  color: white;
+  background: red;
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 8px;
+} 
+/* End product-item */
+
+/* sub-menu */
+.sub-menu {
+  position: relative;
+  z-index: 999;
+}
+
+.sub-menu ul {
+  position: absolute;
+  right: 0;
+  top: 100%;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  background: #eae9e9;
+  min-width: 180px;
+  display: none;
+}
+
+.sub-menu ul li {
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+}
+
+.sub-menu:hover > ul {
+  display: block;
+}
+
+.sub-menu ul li {
+  position: relative;
+}
+
+.sub-menu ul li ul {
+  right: 100%;
+  top: 0;
+}
+
+.sub-menu ul li:hover > ul {
+  display: block;
+}
+/* End sub-menu */
+
+/* product-detail */
+.product-detail .inner-thumb img {
+  width: 100%;
+  height: auto;
+}
+
+.product-detail .inner-title {
+  font-size: 32px;
+  margin-bottom: 15px;
+}
+
+.product-detail .inner-category {
+  margin-bottom: 10px;
+}
+
+.product-detail .inner-price-new {
+  color: green;
+  font-weight: 600;
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+.product-detail .inner-price-old {
+  color: red;
+  font-weight: 600;
+  font-size: 20px;
+  text-decoration: line-through;
+  margin-bottom: 10px;
+}
+
+.product-detail .inner-percent {
+  margin-bottom: 10px;
+}
+
+.product-detail .inner-percent span {
+  color: #fff;
+  background: red;
+  font-weight: 600;
+  display: inline-block;
+  padding: 3px 6px;
+  border-radius: 8px;
+}
+
+.product-detail .inner-stock {
+  margin-bottom: 10px;
+}
+
+.product-detail .inner-stock span {
+  color: #fff;
+  background: green;
+  font-weight: 600;
+  display: inline-block;
+  padding: 3px 6px;
+  border-radius: 8px;
+}
+/* End product-detail */
+
+/* Show Alert */
+[show-alert] {
+  position: fixed;
+  top: 70px;
+  right: 15px;
+  z-index: 9999;
+}
+
+[show-alert].alert-hidden {
+  animation-name: alert-hidden;
+  animation-duration: 0.5s;
+  animation-fill-mode: both;
+}
+
+@keyframes alert-hidden {
+  from {
+    right: 15px;
   }
-  
-  .header .inner-menu > ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    flex-wrap: wrap;
+  to {
+    right: -100%;
+    display: none;
   }
-  
-  .header .inner-menu > ul > li {
-    margin-left: 20px;
-  }
-  /* End Header */
-  
-  /* Footer */
-  .footer {
-    background: #333;
-    color: #fff;
-    text-align: center;
-    padding: 10px;
-  }
-  /* End Footer */
-  
-  /* box-head */
-  .box-head {
-    margin-bottom: 30px;
-  }
-  
-  .box-head .inner-title {
-    margin-bottom: 0;
-    font-size: 28px;
-    font-weight: 600;
-    color: green;
-  }
-  /* End box-head */
-  
-  /* product-item */
-  .product-item {
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    overflow: hidden;
-  }
-  
-  .product-item .inner-image {
-    width: 100%;
-    aspect-ratio: 4/3;
-    border-bottom: 1px solid #ddd;
-  }
-  
-  .product-item .inner-image img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-  
-  .product-item .inner-content {
-    padding: 15px;
-  }
-  
-  .product-item .inner-content .inner-title {
-    font-size: 20px;
-    font-weight: 600;
-  }
-  
-  .product-item .inner-content .inner-price-new {
-    font-size: 18px;
-    font-weight: 600;
-    color: green;
-  }
-  
-  .product-item .inner-content .inner-price-old {
-    font-size: 18px;
-    font-weight: 600;
-    color: red;
-        text-decoration: line-through;
-  }
-  
-  .product-item .inner-content .inner-discount {
-    font-size: 14px;
-    font-weight: 600;
-    color: white;
-    background: red;
-    display: inline-block;
-    padding: 3px 10px;
-    border-radius: 8px;
-  } 
-  /* End product-item */
+}
+
+[show-alert] [close-alert] {
+  background: #ffffffc4;
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  line-height: 24px;
+  text-align: center;
+  font-weight: 600;
+  border-radius: 50%;
+  cursor: pointer;
+}
+/* End Show Alert */
+
+/* chat */
+.chat {
+  width: 100%;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+}
+
+.chat .inner-head {
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+}
+
+.chat .inner-head .inner-avatar {
+  background: #FE5DA3;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: inline-block;
+  font-weight: 700;
+  text-align: center;
+  line-height: 32px;
+  color: #fff;
+}
+
+.chat .inner-head .inner-name {
+  display: inline-block;
+  font-weight: 600;
+  margin-left: 5px;
+}
+
+.chat .inner-body {
+  padding: 10px;
+  max-height: 450px;
+  overflow-y: auto;
+}
+
+.chat .inner-body .inner-name {
+  font-weight: 600;
+}
+
+.chat .inner-body .inner-content {
+  background: #F1F1F1;
+  margin-bottom: 10px;
+  max-width: 350px;
+  padding: 5px 10px;
+  border-radius: 15px;
+  line-height: 1.4;
+  /* word-break: break-word;
+  display: inline-block; */
+}
+
+/* .chat .inner-body .inner-outgoing {
+  float: right;
+  clear: both;
+} */
+
+.chat .inner-outgoing .inner-content {
+  margin-left: auto;
+  background: #FE5DA3;
+  color: #fff;
+}
+
+.chat .inner-foot {
+  border-top: 1px solid #ddd;
+  padding: 10px;
+}
+
+.chat .inner-form {
+  display: flex;
+  align-items: center;
+}
+
+.chat .inner-form input {
+  flex: 1;
+  height: 32px;
+  border: 1px solid #ddd;
+  border-radius: 15px;
+  padding: 0 10px;
+  outline: none;
+}
+
+.chat .inner-form button {
+  border-radius: 15px;
+  border: 1px solid #FE5DA3;
+  background: #FE5DA3;
+  color: #fff;
+  height: 32px;
+  padding: 0 10px;
+  cursor: pointer;
+}
+/* End chat */
+
+/* emoji-picker */
+.tooltip {
+  visibility: hidden;
+}
+
+.tooltip.shown {
+  visibility: visible;
+  opacity: 1;
+}
+/* End emoji-picker */
+
+/* box-typing */
+.box-typing {
+  position: relative;
+}
+
+.box-typing .inner-dots {
+  position: relative;
+  height: 20px;
+  width: 50px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #efefef;
+  border-radius: 45px;
+  margin-top: 2px;
+}
+
+.box-typing .inner-dots span {
+  animation: blink 1.5s infinite;
+  height: 5px;
+  width: 5px;
+  background: #252525;
+  border-radius: 50%;
+  display: inline-block;
+  margin: 0 3px;
+}
+
+.box-typing .inner-dots span:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.box-typing .inner-dots span:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes blink {
+  0% {
+    opacity: 0.1;
+ }
+  20% {
+    opacity: 1;
+ }
+  100% {
+    opacity: 0.1;
+ }
+}
+/* End box-typing */

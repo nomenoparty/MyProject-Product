@@ -22,6 +22,12 @@ module.exports.index = async (req, res) => {
 
 // [GET] /admin/product-category/create
 module.exports.create = async (req, res) => {
+  const permissions = res.locals.role.permissions;
+  if(!permissions.includes("products-category_create")){
+    req.flash("error" , "Error");
+    res.redirect(`/${config.prefixAdmin}/product-category`);
+    return;
+  }
   let find = {
     deleted: false,
   };
@@ -53,6 +59,12 @@ module.exports.createPost = async (req, res) => {
 
 // [GET] /admin/product-category/edit/:id
 module.exports.edit = async (req, res) => {
+  const permissions = res.locals.role.permissions;
+  if(!permissions.includes("products-category_edit")){
+    req.flash("error" , "Error");
+    res.redirect(`/${config.prefixAdmin}/product-category`);
+    return;
+  }
   const id = req.params.id;
   const data = await productCategory.findOne({
     _id: id,

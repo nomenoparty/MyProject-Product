@@ -6,14 +6,23 @@ const bodyParser = require("body-parser");
 const cookieParser = require('cookie-parser')
 const flash = require("express-flash");
 const session = require("express-session");
+const http = require('http');
+const { Server } = require("socket.io");
 const database = require("./config/database");
 const systemConfig = require("./config/system");
 const path = require('path');
+const moment = require('moment');
 database.connect();
 
 const product = require('./models/products.model');
 
 const app = express();
+
+const server = http.createServer(app);
+const io = new Server(server);
+
+global._io = io;
+
 const port = process.env.PORT;  
 
 const routeAdmin = require("./routes/admin/index.route");
@@ -35,10 +44,17 @@ app.use(methodOverride("_method"));
 app.use(bodyParser.urlencoded({ extended: false }));
 
 app.locals.prefixAdmin = systemConfig.prefixAdmin;
+app.locals.moment = moment;
 
 routeAdmin(app);
 route(app);
 
-app.listen(port, () => {
+app.get("*", (req, res) => {
+  res.render("clients/pages/errors/404", {
+    titlePage: "404 Not Found"
+  });
+});
+
+server.listen(port, () => {
   console.log(`App listening on port ${port}`);
 });

@@ -5,6 +5,8 @@ const controller = require("../../controllers/client/products.controller");
 
 router.get("/", controller.index);
 
-router.get("/detail/:slug", controller.detail);
+router.get("/detail/:slugProduct", controller.detail);
+
+router.get("/:slugCategory", controller.category);
 
 module.exports = router; 
